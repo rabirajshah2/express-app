@@ -11,8 +11,9 @@ app.get("/", (req, res) => {
 
 app.use("/api", routerIndex);
 
-app.use("*", (req, res) => {
-  res.status(404).json({ msg: "Invalid Path" });
+app.use((err, req, res, next) => {
+  const error = err.toString() || "something went wrong";
+  res.status(500).json({ msg: error });
 });
 
 app.listen(PORT, () => {

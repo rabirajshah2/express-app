@@ -1,7 +1,14 @@
 const userRouter = require("express").Router();
 
 userRouter.get("/", (req, res) => {
-  res.json({ msg: "Hello user from user's index" });
+  try {
+    const div = 1 / 2;
+    div = "a";
+    console.log(div);
+    res.json({ msg: "Hello user from user's index" });
+  } catch (e) {
+    throw new Error("constant variable is not reassigned");
+  }
 });
 
 userRouter.get("/:name", (req, res) => {
