@@ -1,22 +1,36 @@
 const userRouter = require("express").Router();
 
-userRouter.get("/", (req, res) => {
+const checkRole = (sysRole = []) => {
+  //sysRole = [] default function
+  return (req, res, next) => {
+    const { currentRole } = req.query;
+    if (!currentRole && sysRole.length === 0) {
+      next();
+    } else {
+      const roleExist = sysRole.includes(currentRole);
+      if (!roleExist) throw new Error("Unauthorized User");
+      next();
+    }
+  };
+};
+
+//everybody can see this because of middleware checkRole
+userRouter.get("/", checkRole(), (req, res) => {
   try {
-    const div = 1 / 2;
-    div = "a";
-    console.log(div);
     res.json({ msg: "Hello user from user's index" });
   } catch (e) {
-    throw new Error("constant variable is not reassigned");
+    throw new Error(e);
   }
 });
 
-userRouter.get("/:name", (req, res) => {
+//everybody can see this because of middleware checkRole
+userRouter.get("/:name", checkRole(), (req, res) => {
   res.json({ msg: `Hello ${req.params.name} from user's index` });
 });
 
-userRouter.post("/", (req, res) => {
-  res.json({ msg: "create new user" });
+// only user or admin can see this because of middleware checkRole
+userRouter.post("/", checkRole(["user", "admin"]), (req, res) => {
+  res.json({ msg: "Congratulations user, you can post now" });
 });
 
 userRouter.put("/:id", (req, res) => {
