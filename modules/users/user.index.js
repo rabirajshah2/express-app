@@ -15,9 +15,10 @@ const checkRole = (sysRole = []) => {
 };
 
 //everybody can see this because of middleware checkRole
-userRouter.get("/", checkRole(), (req, res) => {
+userRouter.get("/login", checkRole(), (req, res) => {
   try {
-    res.json({ msg: "Hello user from user's index" });
+    const { username, password } = req.body;
+    res.json({ msg: `user will login using ${username} and ${password} ` });
   } catch (e) {
     throw new Error(e);
   }
